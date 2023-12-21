@@ -1,0 +1,78 @@
+CREATE TABLE AEROPORTO(
+    Città TEXT NOT NULL,
+    Nazione TEXT NOT NULL,
+    NumPiste DOUBLE
+);
+
+INSERT INTO AEROPORTO VALUES ('Napoli', 'ITALIA', 5);
+INSERT INTO AEROPORTO VALUES ('Roma', 'ITALIA', null);
+INSERT INTO AEROPORTO VALUES ('Milano', 'ITALIA', 5);
+INSERT INTO AEROPORTO VALUES ('Firenze', 'ITALIA', 3);
+INSERT INTO AEROPORTO VALUES ('Torino', 'ITALIA', 4);
+INSERT INTO AEROPORTO VALUES ('Bologna', 'ITALIA', 2);
+INSERT INTO AEROPORTO VALUES ('Verona', 'ITALIA', null);
+INSERT INTO AEROPORTO VALUES ('Venezia', 'ITALIA', 3);
+INSERT INTO AEROPORTO VALUES ('Bari', 'ITALIA', 4);
+INSERT INTO AEROPORTO VALUES ('Messina', 'ITALIA', 2);
+
+
+CREATE TABLE VOLO(
+    IdVolo VARCHAR(255) PRIMARY KEY,
+    GiornoSett TEXT NOT NULL,
+    CittaPart TEXT NOT NULL,
+    OraPart TIME,
+    CittaArr TEXT NOT NULL,
+    OraArr TIME,
+    TipoAereo TEXT NOT NULL
+);
+
+INSERT INTO VOLO VALUES ('AZ274', 'Lunedi','Napoli', '11:00:00', 'Roma', '12:20:00', 'Boing777');
+INSERT INTO VOLO VALUES ('AZ275', 'Martedi','Roma', '11:50:00', 'Milano', '12:50:00', 'Boing776');
+INSERT INTO VOLO VALUES ('AZ276', 'Mercoledi','Milano', '21:00:00', 'Bologna', '21:20:00', 'Boing775');
+INSERT INTO VOLO VALUES ('AZ277', 'Giovedi','Firenze', '13:10:00', 'Torino', '14:00:00', 'Boing778');
+INSERT INTO VOLO VALUES ('AZ278', 'Venerdi','Torino', '15:40:00', 'Bologna', '18:00:00', 'Boing774');
+INSERT INTO VOLO VALUES ('AZ279', 'Sabato','Bologna', '15:00:00', 'Verona', '17:20:00', 'Boing773');
+INSERT INTO VOLO VALUES ('AZ273', 'Domenica','Verona', '16:10:00', 'Venezia', '19:30:00', 'Boing772');
+INSERT INTO VOLO VALUES ('AZ272', 'Lunedi','Venezia', '10:00:00', 'Bari', '12:00:00', 'Boing771');
+INSERT INTO VOLO VALUES ('AZ271', 'Martedi','Torino', '12:30:00', 'Messina', '14:20:00', 'Boing779');
+INSERT INTO VOLO VALUES ('AZ280', 'Mercoledi','Messina', '20:00:00', 'Napoli', '22:20:00', 'Boing770');
+
+#Aggiornamento della durata dei voli utilizzando la differenza di orario tra la partenza e l'arrivo:
+ ALTER TABLE VOLO ADD COLUMN Durata TIME;
+ UPDATE VOLO SET Durata = TIMEDIFF(OraArr, OraPart);
+
+
+CREATE TABLE AEREO(
+    TipoAereo TEXT NOT NULL,
+    NumPasseggeri DOUBLE,
+    QtaMerci DOUBLE
+);
+
+INSERT INTO AEREO VALUES ('Boing777', 200, 250);
+INSERT INTO AEREO VALUES ('Boing775', 250, 300);
+INSERT INTO AEREO VALUES ('Boing773', 206, 310);
+INSERT INTO AEREO VALUES ('Boing774', 209, 200);
+INSERT INTO AEREO VALUES ('Boing771', 240, 250);
+INSERT INTO AEREO VALUES ('Boing770', 100, 270);
+INSERT INTO AEREO VALUES ('Boing778', 220, 190);
+INSERT INTO AEREO VALUES ('Boing779', 180, 350);
+INSERT INTO AEREO VALUES ('Boing772', 190, 330);
+INSERT INTO AEREO VALUES ('Boing776', 210, 300);
+
+#Le città con un aeroporto di cui non è noto il numero di piste;
+SELECT*FROM AEROPORTO WHERE NumPiste IS NULL;
+
+#I tipi di aereo usati nei voli che partono da Torino;
+SELECT TipoAereo FROM VOLO WHERE CittaPart='Torino';
+
+#Le città da cui partono voli diretti a Bologna
+SELECT CittaPart FROM VOLO WHERE CittaArr='Bologna';
+
+#Le città da cui parte e arriva il volo con codice AZ274;
+SELECT CittaPart, CittaArr FROM VOLO WHERE IdVolo='AZ274';
+
+#Calcolo della media del numero di passeggeri su tutti gli aerei:
+SELECT AVG(NumPasseggeri) AS MediaPasseggeri FROM AEREO;
+
+#Selezione della durata dei voli in ordine decrescente, mostrando l'ID del volo e la durata:
+SELECT IdVolo, Durata FROM VOLO ORDER BY Durata DESC;
